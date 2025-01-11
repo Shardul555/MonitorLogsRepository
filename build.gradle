@@ -1,0 +1,38 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.4.1'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(22)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	//implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.18.2'
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.18.2'
+	// https://mvnrepository.com/artifact/org.springframework/spring-websocket
+	implementation group: 'org.springframework', name: 'spring-websocket', version: '6.2.1'
+	implementation group: 'org.springframework', name: 'spring-messaging', version: '6.2.1'
+	// https://mvnrepository.com/artifact/org.projectlombok/lombok
+	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.36'
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.24.3'
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
