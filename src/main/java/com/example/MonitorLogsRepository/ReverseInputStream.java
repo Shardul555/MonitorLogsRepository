@@ -44,9 +44,12 @@ public class ReverseInputStream extends InputStream {
         while(!stringBuilderStack.empty()) {
             stringBuilder.insert(stringBuilder.length(), stringBuilderStack.peek());
             stringBuilder.append(System.lineSeparator());
+            WebSocketMessageService.lastLogs.add(stringBuilderStack.peek());
             stringBuilderStack.pop();
         }
-        System.out.println(stringBuilder);
+        while(WebSocketMessageService.lastLogs.size()>10) {
+            WebSocketMessageService.lastLogs.pop();
+        }
         return stringBuilder.toString();
     }
 }
