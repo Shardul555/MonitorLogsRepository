@@ -1,9 +1,14 @@
 package com.example.MonitorLogsRepository;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+import org.w3c.dom.Text;
 
+import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
@@ -12,8 +17,17 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private static final CopyOnWriteArrayList<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) {
+    public void afterConnectionEstablished(WebSocketSession session) throws IOException {
         sessions.add(session);
+        if(!WebSocketMessageService.lastLogs.isEmpty()) {
+            Deque<String> lastLogs = new ArrayDeque<>(WebSocketMessageService.lastLogs);
+            StringBuilder stringBuilder = new StringBuilder();
+            while(!lastLogs.isEmpty()) {
+                stringBuilder.insert(stringBuilder.length(), lastLogs.pop());
+                stringBuilder.append(System.lineSeparator());
+            }
+            session.sendMessage(new TextMessage(stringBuilder.toString()));
+        }
     }
 
     @Override
@@ -24,16 +38,4 @@ public class WebSocketHandler extends TextWebSocketHandler {
     public static CopyOnWriteArrayList<WebSocketSession> getSessions() {
         return sessions;
     }
-
-//    public void sendMessageToAll(String message) {
-//        for (WebSocketSession session : sessions) {
-//            if (session.isOpen()) {
-//                try {
-//                    session.sendMessage(new TextMessage(message));
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
 }
